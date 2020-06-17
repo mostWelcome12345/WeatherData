@@ -1,5 +1,7 @@
 package com.psl.AssignmentISV.Security;
 
+import com.psl.AssignmentISV.SpringApplicationContext;
+
 public class SecurityConstants {
 
 	public static final long EXPIRATION_TIME=86400000; // 10 days
@@ -10,5 +12,13 @@ public class SecurityConstants {
 	
 	public static final String SIGN_UP_URL="/users";
 	
-	public static final String TOKEN_SECRET ="jf9bdbie9bjb9gbbttt0";
+	
+	public static String getTokenSecret() {
+		
+		
+		AppProperties appProperties=(AppProperties) SpringApplicationContext.getBean("appProperties");
+		
+		return appProperties.getTokenSecret();
+	}
+	
 }

@@ -20,12 +20,7 @@ public class WeatherController {
 	@Autowired
 	UserService userService;
 
-	@GetMapping("/getuser")
-	public String getUser() {
-		return "its working";
-	}
-
-	// user details to be stored in the database
+	
 	@PostMapping
 	public UserDetailsResponse createUser(@RequestBody UserDetailsRequest userDetails) {
 
@@ -42,4 +37,7 @@ public class WeatherController {
 		return returnValue;
 
 	}
+	
+	
+	
 }

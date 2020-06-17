@@ -15,14 +15,15 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.psl.AssignmentISV.SpringApplicationContext;
 import com.psl.AssignmentISV.Request.UserLoginRequestModel;
+import com.psl.AssignmentISV.Service.UserService;
+import com.psl.AssignmentISV.Shared.dto.UserDTO;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-	
-	
 	
 
 	private final AuthenticationManager authenticationManager;
@@ -52,9 +53,17 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 		String token = Jwts.builder().setSubject(userName)
 				.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
-				.signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET).compact();
+				.signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret()).compact();
+		
+		
+		UserService userService=(UserService) SpringApplicationContext.getBean("userServiceImpl");
+		
+		UserDTO userDto=userService.getUser(userName);
+		
 		
 		res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX+token);
+		
+		res.addHeader("UserID", userDto.getUserId());
 		
 	}
 
