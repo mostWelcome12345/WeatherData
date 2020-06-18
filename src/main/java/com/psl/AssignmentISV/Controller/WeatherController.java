@@ -31,7 +31,7 @@ public class WeatherController {
 	UserService userService;
 
 	
-	@PostMapping
+	@PostMapping("/registration")
 	public UserDetailsResponse createUser(@RequestBody UserDetailsRequest userDetails) throws UserServiceException {
 
 		UserDetailsResponse returnValue = new UserDetailsResponse();
