@@ -4,14 +4,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.internal.verification.Times;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -27,29 +32,35 @@ class UserServiceImplTest {
 
 	@Mock
 	UserRepository userRepository;
-	
+
 	@Mock
 	Utils utils;
 
 	@Mock
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	String userID = "cvbn56789";
+
+	String encryptedPassword = "fghjkl5678fghjk4e478";
+
+	UserEntity userEntity;
+
 	@BeforeEach
 	void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+
+		userEntity = new UserEntity();
+
+		userEntity.setId(1L);
+		userEntity.setFirstName("Swagata");
+		userEntity.setUserId(userID);
+		userEntity.setEncryptedPassword(encryptedPassword);
 	}
 
 	@Test
 	void testGetUser() {
 
-		UserEntity userEntiry = new UserEntity();
-
-		userEntiry.setId(1L);
-		userEntiry.setFirstName("Swagata");
-		userEntiry.setUserId("cfgvhbjk6789");
-		userEntiry.setEncryptedPassword("fghjkl5678fghjk4e478");
-
-		when(userRepository.findByemail(anyString())).thenReturn(userEntiry);
+		when(userRepository.findByemail(anyString())).thenReturn(userEntity);
 
 		UserDTO userDTO = userServiceimpl.getUser("test@test.com");
 
@@ -71,6 +82,37 @@ class UserServiceImplTest {
 				}
 
 		);
+
+	}
+
+	@Test
+	final void createUser() {
+
+		when(userRepository.findByemail(anyString())).thenReturn(null);
+		when(utils.generateUserId(anyInt())).thenReturn(userID);
+		when(bCryptPasswordEncoder.encode(anyString())).thenReturn(encryptedPassword);
+		when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
+		
+		
+		
+
+		UserDTO userDTO = new UserDTO();
+		userDTO.setFirstName("Swagata");
+		userDTO.setLastName("dutta");
+		userDTO.setPassword("12345678");
+		userDTO.setEmail("test@test.com");
+		UserDTO storeduserDetails = userServiceimpl.createUser(userDTO);
+
+		assertNotNull(storeduserDetails);
+
+		assertEquals(userEntity.getFirstName(), storeduserDetails.getFirstName());
+		assertEquals(userEntity.getLastName(), storeduserDetails.getLastName());
+		
+		assertNotNull(storeduserDetails.getUserId());
+		
+		verify(bCryptPasswordEncoder,times(1)).encode("12345678");
+		
+		verify(userRepository,times(1)).save(any(UserEntity.class));
 
 	}
 
