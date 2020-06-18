@@ -11,12 +11,12 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.psl.AssignmentISV.Controller.WeatherControllerAPI;
+import com.psl.AssignmentISV.Controller.WeatherController;
 
 @SpringBootTest
 class WeatherDataApplicationTests {
 	@Autowired
-	private WeatherControllerAPI controller;
+	private WeatherController controller;
 
 	@Test
 	public void contextLoads() throws JsonMappingException, JsonProcessingException {
