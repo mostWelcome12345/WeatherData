@@ -54,7 +54,6 @@ public class WeatherControllerAPI {
 			return new ResponseEntity<String>("Please enter valid city name", HttpStatus.BAD_REQUEST);
 
 		}
-
 	}
 
 }
