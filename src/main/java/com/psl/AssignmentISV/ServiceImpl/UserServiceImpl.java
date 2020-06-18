@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.psl.AssignmentISV.Entity.UserEntity;
+import com.psl.AssignmentISV.Exceptions.UserServiceException;
 import com.psl.AssignmentISV.Service.UserService;
 import com.psl.AssignmentISV.Shared.Utils;
 import com.psl.AssignmentISV.Shared.dto.UserDTO;
@@ -29,10 +30,10 @@ public class UserServiceImpl implements UserService {
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
-	public UserDTO createUser(UserDTO user) {
+	public UserDTO createUser(UserDTO user) throws UserServiceException {
 
 		if (userRepo.findByemail(user.getEmail()) != null)
-			throw new RuntimeException("Record exits");
+			throw new UserServiceException("Record already exits");
 
 		UserEntity userEntity = new UserEntity();
 

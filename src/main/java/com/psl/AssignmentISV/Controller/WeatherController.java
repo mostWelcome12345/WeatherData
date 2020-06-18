@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.psl.AssignmentISV.Exceptions.UserServiceException;
 import com.psl.AssignmentISV.Request.UserDetailsRequest;
 import com.psl.AssignmentISV.Response.UserDetailsResponse;
 import com.psl.AssignmentISV.Service.UserService;
@@ -22,7 +23,7 @@ public class WeatherController {
 
 	
 	@PostMapping
-	public UserDetailsResponse createUser(@RequestBody UserDetailsRequest userDetails) {
+	public UserDetailsResponse createUser(@RequestBody UserDetailsRequest userDetails) throws UserServiceException {
 
 		UserDetailsResponse returnValue = new UserDetailsResponse();
 
