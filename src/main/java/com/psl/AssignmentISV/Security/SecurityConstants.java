@@ -21,4 +21,10 @@ public class SecurityConstants {
 		return appProperties.getTokenSecret();
 	}
 	
+	public static String getApiKey() {
+		AppProperties appProperties= (AppProperties) SpringApplicationContext.getBean("appProperties");
+		
+		return appProperties.getApiKey();
+	}
+	
 }

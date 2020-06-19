@@ -13,4 +13,8 @@ public class AppProperties {
 	public String getTokenSecret() {
 		return env.getProperty("tokenSecret");
 	}
+	
+	public String getApiKey() {
+		return env.getProperty("api_key");
+	}
 }

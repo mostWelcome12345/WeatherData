@@ -22,6 +22,7 @@ import com.psl.AssignmentISV.Exceptions.UserServiceException;
 import com.psl.AssignmentISV.Request.Location;
 import com.psl.AssignmentISV.Request.UserDetailsRequest;
 import com.psl.AssignmentISV.Response.UserDetailsResponse;
+import com.psl.AssignmentISV.Security.SecurityConstants;
 import com.psl.AssignmentISV.Service.UserService;
 import com.psl.AssignmentISV.Shared.dto.UserDTO;
 
@@ -60,16 +61,16 @@ public class WeatherController {
 	@GetMapping("/{cityName}")
 	public ResponseEntity<String> getWeather(@PathVariable String cityName)
 			throws JsonMappingException, JsonProcessingException {
-		String api_key = "pZrqi9yXpiQVuG99rtCxHDEeJQfyVuzY";
+		//String api_key = "pZrqi9yXpiQVuG99rtCxHDEeJQfyVuzY";
 
-		final String uri = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey=" + api_key + "&q="
+		final String uri = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey=" + SecurityConstants.getApiKey() + "&q="
 				+ cityName + "&language=en-us";
 		RestTemplate restTemplate = new RestTemplate();
 		Location[] loc = restTemplate.getForObject(uri, Location[].class);
 
 		try {
 			final String uri1 = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/" + loc[0].getKey()
-					+ "?apikey=" + api_key + "&language=en-us";
+					+ "?apikey=" + SecurityConstants.getApiKey() + "&language=en-us";
 			RestTemplate restTemplate1 = new RestTemplate();
 
 			String loc1 = restTemplate1.getForObject(uri1, String.class);
