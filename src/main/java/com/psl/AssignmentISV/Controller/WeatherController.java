@@ -1,6 +1,7 @@
 package com.psl.AssignmentISV.Controller;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,7 @@ public class WeatherController {
 			String loc1 = restTemplate1.getForObject(uri1, String.class);
 
 			JSONObject obj = new JSONObject(loc1);
+		     JSONObject jsonObject = new JSONObject();
 
 			JSONArray arr = obj.getJSONArray("DailyForecasts");
 			String WeatheDetails = null;
@@ -94,16 +96,29 @@ public class WeatherController {
 				String day = arr.getJSONObject(i).getJSONObject("Day").getString("IconPhrase");
 				String night = arr.getJSONObject(i).getJSONObject("Night").getString("IconPhrase");
 
-				WeatheDetails = "Weather Forecast Details for:" + cityName + "	for Date :" + date
-						+ "	Tempreature- Min:-" + Temp_min_value + " Max:-" + Temp_max_value + " Unit"
-						+ Temp_max_value_unit + "	Day details:- " + day + "	Night details:-" + night;
+				  jsonObject.put("City", cityName);
+
+				     jsonObject.put("date", date);
+				     jsonObject.put("TemperatureMinimum", Temp_min_value);
+				     jsonObject.put("TemperatureMaximum", Temp_max_value);
+				     jsonObject.put("TemperatureUnit", Temp_max_value_unit);
+
+				     jsonObject.put("DayWeather", day);
+				     jsonObject.put("NightWeather", night);
 			}
-			return new ResponseEntity<String>(WeatheDetails, HttpStatus.OK);
+			return new ResponseEntity<String>(jsonObject.toString(), HttpStatus.OK);
 
 		} catch (Exception ex) {
 			System.out.println("Please enter valid city name");
-			return new ResponseEntity<String>("Please enter valid city name", HttpStatus.BAD_REQUEST);
+			 JSONObject errorObject = new JSONObject();		
+			 try {
+				errorObject.put("error", "Please enter valid city name");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
+			 return new ResponseEntity<String>(errorObject.toString(), HttpStatus.BAD_REQUEST);
 		}
 
 	}
