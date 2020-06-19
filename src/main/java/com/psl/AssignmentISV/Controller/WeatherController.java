@@ -1,5 +1,7 @@
 package com.psl.AssignmentISV.Controller;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -30,7 +32,9 @@ public class WeatherController {
 	@Autowired
 	UserService userService;
 
-	
+	@Autowired
+	RestTemplate restTemplate;
+
 	@PostMapping("/registration")
 	public UserDetailsResponse createUser(@RequestBody UserDetailsRequest userDetails) throws UserServiceException {
 
@@ -47,7 +51,7 @@ public class WeatherController {
 		return returnValue;
 
 	}
-	
+
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		return builder.build();
@@ -56,20 +60,44 @@ public class WeatherController {
 	@GetMapping("/{cityName}")
 	public ResponseEntity<String> getWeather(@PathVariable String cityName)
 			throws JsonMappingException, JsonProcessingException {
-		String api_key="pZrqi9yXpiQVuG99rtCxHDEeJQfyVuzY";
+		String api_key = "pZrqi9yXpiQVuG99rtCxHDEeJQfyVuzY";
 
-		final String uri = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey="+api_key+"&q="
+		final String uri = "http://dataservice.accuweather.com/locations/v1/cities/search?apikey=" + api_key + "&q="
 				+ cityName + "&language=en-us";
 		RestTemplate restTemplate = new RestTemplate();
 		Location[] loc = restTemplate.getForObject(uri, Location[].class);
 
 		try {
 			final String uri1 = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/" + loc[0].getKey()
-					+ "?apikey="+api_key+"&language=en-us";
+					+ "?apikey=" + api_key + "&language=en-us";
 			RestTemplate restTemplate1 = new RestTemplate();
 
 			String loc1 = restTemplate1.getForObject(uri1, String.class);
-			return new ResponseEntity<String>(loc1, HttpStatus.OK);
+
+			JSONObject obj = new JSONObject(loc1);
+
+			JSONArray arr = obj.getJSONArray("DailyForecasts");
+			String WeatheDetails = null;
+			for (int i = 0; i < arr.length(); i++) {
+				String date = arr.getJSONObject(i).getString("Date");
+				String Temp_min_value = arr.getJSONObject(i).getJSONObject("Temperature").getJSONObject("Minimum")
+						.getString("Value");
+				String Temp_min_value_unit = arr.getJSONObject(i).getJSONObject("Temperature").getJSONObject("Minimum")
+						.getString("Unit");
+
+				String Temp_max_value = arr.getJSONObject(i).getJSONObject("Temperature").getJSONObject("Maximum")
+						.getString("Value");
+				String Temp_max_value_unit = arr.getJSONObject(i).getJSONObject("Temperature").getJSONObject("Maximum")
+						.getString("Unit");
+
+				String day = arr.getJSONObject(i).getJSONObject("Day").getString("IconPhrase");
+				String night = arr.getJSONObject(i).getJSONObject("Night").getString("IconPhrase");
+
+				WeatheDetails = "Weather Forecast Details for:" + cityName + "	for Date :" + date
+						+ "	Tempreature- Min:-" + Temp_min_value + " Max:-" + Temp_max_value + " Unit"
+						+ Temp_max_value_unit + "	Day details:- " + day + "	Night details:-" + night;
+			}
+			return new ResponseEntity<String>(WeatheDetails, HttpStatus.OK);
 
 		} catch (Exception ex) {
 			System.out.println("Please enter valid city name");
@@ -78,5 +106,5 @@ public class WeatherController {
 		}
 
 	}
-	
+
 }
