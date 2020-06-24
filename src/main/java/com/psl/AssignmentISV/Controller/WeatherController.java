@@ -28,7 +28,7 @@ import com.psl.AssignmentISV.Service.UserService;
 import com.psl.AssignmentISV.Shared.dto.UserDTO;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping(value="users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class WeatherController {
 
 	@Autowired
@@ -60,7 +60,7 @@ public class WeatherController {
 	}
 
 	@GetMapping("/{cityName}")
-	public ResponseEntity<String> getWeather(@PathVariable String cityName)
+	public @ResponseBody ResponseEntity<String> getWeather(@PathVariable String cityName)
 			throws JsonMappingException, JsonProcessingException {
 		//String api_key = "pZrqi9yXpiQVuG99rtCxHDEeJQfyVuzY";
 
