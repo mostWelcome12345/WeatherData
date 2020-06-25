@@ -30,7 +30,7 @@ import com.psl.AssignmentISV.Service.UserService;
 import com.psl.AssignmentISV.Shared.dto.UserDTO;
 
 @RestController
-@RequestMapping(value="Weather", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class WeatherController {
 
 	@Autowired
