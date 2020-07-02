@@ -89,7 +89,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<finalName>weather-data-docker</finalName>
+					<finalName>weather-data-container</finalName>
 				</configuration>
 			</plugin>
 		</plugins>
